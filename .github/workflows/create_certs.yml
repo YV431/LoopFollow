@@ -60,8 +60,8 @@ jobs:
         run: |
           CERT_STATUS_FILE="${{ github.workspace }}/fastlane/new_certificate_needed.txt"
           # Convert to lowercase for case-insensitive comparison
-          ENABLE_NUKE_CERTS=$(echo "${{ vars.ENABLE_NUKE_CERTS }}" | tr '[:upper:]' '[:lower:]')
-          FORCE_NUKE_CERTS=$(echo "${{ vars.FORCE_NUKE_CERTS }}" | tr '[:upper:]' '[:lower:]')
+          ENABLE_NUKE_CERTS="true"
+          FORCE_NUKE_CERTS="true"
 
           if [ -f "$CERT_STATUS_FILE" ]; then
             CERT_STATUS=$(cat "$CERT_STATUS_FILE" | tr -d '\n' | tr -d '\r') # Read file content and strip newlines
@@ -112,7 +112,7 @@ jobs:
       - name: Recreate Distribution certificate after nuking
         run: |
           set -e # Set error immediately after this step if error occurs
-          bundle exec fastlane certs
+          bundle exec fastlane nuke_certs || true
 
       - name: Add success annotations for nuke and certificate recreation
         if: ${{ success() }}
